@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengembaraan Kereta Api Bahasa: Misi Imbuhan</title>
+    <!-- Tailwind CSS untuk reka bentuk moden -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #certificate-section, #certificate-section * {
+                visibility: visible;
+            }
+            #certificate-section {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden p-6 md:p-8">
+        
+        <!-- BAHAGIAN 1: BORANG TIKET (NAMA & KELAS) -->
+        <div id="login-section" class="text-center">
+            <div class="mb-6">
+                <span class="text-5xl">🚂</span>
+                <h1 class="text-2xl md:text-3xl font-bold text-blue-900 mt-2">Ekspres Bahasa: Misi Imbuhan</h1>
+                <p class="text-gray-600 mt-1">Jelajah stesen demi stesen dan kumpul markah untuk dapatkan Sijil Diraja!</p>
+            </div>
+
+            <form id="ticket-form" class="space-y-4 text-left max-w-md mx-auto">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Penuh:</label>
+                    <input type="text" id="student-name" required placeholder="Cth: Ahmad Zikri" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Kelas:</label>
+                    <input type="text" id="student-class" required placeholder="Cth: 5 Cemerlang" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+                <button type="submit" 
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition duration-200 shadow-lg mt-4">
+                    🎫 Cetak Tiket & Mula Perjalanan
+                </button>
+            </form>
+        </div>
+
+        <!-- BAHAGIAN 2: PAPARAN PERMAINAN / STESEN -->
+        <div id="game-section" class="hidden">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <div>
+                    <span id="station-badge" class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-1 rounded">Stesen 1</span>
+                    <h2 id="station-title" class="text-lg font-bold text-gray-800 mt-1">Stesen Awalan</h2>
+                </div>
+                <div class="text-right">
+                    <span class="text-sm text-gray-500">Skor: <strong id="current-score" class="text-blue-600">0</strong></span>
+                    <p class="text-xs text-gray-400">Soalan <span id="current-q-num">1</span>/5</p>
+                </div>
+            </div>
+
+            <!-- Visual Keretapi Kecil -->
+            <div class="bg-blue-50 p-4 rounded-xl mb-6 flex items-center justify-between">
+                <span class="text-sm font-medium text-blue-900" id="player-ticket-info">Pemandu: -</span>
+                <span class="text-2xl animate-pulse">🛤️ 🚆💨</span>
+            </div>
+
+            <!-- Soalan -->
+            <div class="mb-6">
+                <p id="question-text" class="text-lg font-semibold text-gray-800 mb-4">Soalan akan muncul di sini...</p>
+                <div id="options-container" class="space-y-3">
+                    <!-- Pilihan jawapan akan dimasukkan secara dinamik -->
+                </div>
+            </div>
+
+            <button id="next-btn" onclick="nextQuestion()" class="hidden w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition duration-200">
+                Seterusnya ➡️
+            </button>
+        </div>
+
+        <!-- BAHAGIAN 3: SIJIL PENGHARGAAN -->
+        <div id="certificate-section" class="hidden text-center">
+            <div id="certificate-card" class="border-8 border-double border-amber-500 p-6 md:p-8 rounded-xl bg-amber-50/50 relative">
+                <div class="absolute top-2 right-2 text-3xl">🚂⭐</div>
+                <h3 class="text-xl font-bold text-amber-800 uppercase tracking-widest">Sijil Penghargaan</h3>
+                <p class="text-xs text-gray-500 mt-1">Pentas Pengembaraan Bahasa Melayu</p>
+                
+                <p class="text-sm text-gray-600 mt-6">Dengan sukacitanya disahkan bahawa</p>
+                <h1 id="cert-name" class="text-2xl md:text-3xl font-bold text-blue-900 underline my-2">Nama Murid</h1>
+                <p class="text-sm text-gray-600">Dari Kelas <strong id="cert-class">-</strong></p>
+                
+                <p class="text-sm text-gray-700 mt-4 leading-relaxed">
+                    telah berjaya mengharungi semua stesen pengembaraan imbuhan (Awalan, Akhiran, Apitan) dengan cemerlang dan berjaya merangkumkan jumlah markah:
+                </p>
+                
+                <div class="my-4">
+                    <span id="cert-score" class="text-3xl font-extrabold text-green-600">0 / 20</span>
+                </div>
+
+                <div class="flex justify-between items-center mt-8 pt-4 border-t border-amber-200 text-xs text-gray-500">
+                    <div>Tarikh: <span id="cert-date"></span></div>
+                    <div>Stesen Bahasa 🚆</div>
+                </div>
+            </div>
+
+            <div class="mt-6 flex gap-3">
+                <button onclick="window.print()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition">
+                    🖨️ Cetak / Simpan Sijil
+                </button>
+                <button onclick="location.reload()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold px-4 py-3 rounded-lg transition">
+                    🔄 Main Semula
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Data Soalan Mengikut Stesen (Setiap stesen 5 soalan)
+        const stationsData = [
+            {
+                stationName: "Stesen 1: Imbuhan Awalan",
+                badge: "Stesen 1",
+                questions: [
+                    { q: "Apakah imbuhan awalan yang betul untuk kata dasar 'tulis' bagi membentuk ayat aktif?", options: ["mem-", "menulis", "ber-", "ter-"], answer: 1, explanation: "'menulis' menggunakan awalan men-." },
+                    { q: "Pilih perkataan yang menggunakan imbuhan awalan 'ber-':", options: ["Membaca", "Berjalan", "Terjatuh", "Lukisan"], answer: 1, explanation: "'Berjalan' menggunakan imbuhan awalan ber-." },
+                    { q: "Imbuhan awalan yang sesuai untuk kata dasar 'ajar' ialah...", options: ["melejar", "belajar", "terajar", "penagih"], answer: 1, explanation: "'belajar' ialah perkataan khusus dengan awalan bel-." },
+                    { q: "Pilih ayat yang mempunyai kata berimbuhan awalan 'di-':", options: ["Buku itu dibaca oleh Ali.", "Ali membaca buku.", "Ali membaca di perpustakaan.", "Buku itu cantik."], answer: 0, explanation: "'dibaca' menggunakan imbuhan awalan di-." },
+                    { q: "Kata dasar 'nyanyi' apabila diberi imbuhan awalan 'meN-' menjadi...", options: ["menyanyi", "menyanyikan", "menyanyi", "menyaynyi"], answer: 0, explanation: "'menyanyi' (huruf 'n' menggantikan 'ny')." }
+                ]
+            },
+            {
+                stationName: "Stesen 2: Imbuhan Akhiran",
+                badge: "Stesen 2",
+                questions: [
+                    { q: "Apakah imbuhan akhiran yang sesuai untuk kata dasar 'minum'?", options: ["-kan", "-an", "-i", "-nya"], answer: 1, explanation: "Minuman (kata nama)." },
+                    { q: "Pilih perkataan yang menggunakan akhiran '-kan':", options: ["Bersih", "Bersihkan", "Kebersihan", "Pembersih"], answer: 1, explanation: "Bersihkan menggunakan akhiran -kan." },
+                    { q: "Kata dasar 'duduk' ditambah akhiran '-an' menjadi...", options: ["dudukan", "kedudukan", "dudukkan", "duduknya"], answer: 0, explanation: "Dudukan." },
+                    { q: "Imbuhan akhiran yang betul untuk kata dasar 'janji' ialah...", options: ["janjikan", "berjanji", "perjanjian", "janjia"], answer: 0, explanation: "Janjikan." },
+                    { q: "Yang manakah berikut merupakan kata berimbuhan akhiran?", options: ["Lukisan", "Melukis", "Pelukis", "Terlukis"], answer: 0, explanation: "Lukisan menggunakan akhiran -an." }
+                ]
+            },
+            {
+                stationName: "Stesen 3: Imbuhan Apitan",
+                badge: "Stesen 3",
+                questions: [
+                    { q: "Pilih perkataan berimbuhan apitan bagi kata dasar 'ajar':", options: ["Belajar", "Pelajaran", "Mengajar", "Ajaran"], answer: 1, explanation: "Pelajaran (pe-...-an)." },
+                    { q: "Apitan yang betul untuk kata dasar 'bantu' ialah...", options: ["membantu", "bantuan", "perbantuan", "membantukan"], answer: 1, explanation: "Bantuan (ban-...-an)." },
+                    { q: "Perkataan 'kemerdekaan' menggunakan apitan...", options: ["ke-...-an", "pe-...-an", "me-...-kan", "ber-...-an"], answer: 0, explanation: "ke-...-an." },
+                    { q: "Pilih apitan untuk kata dasar 'rasa':", options: ["Berasa", "Merasakan", "Perasaan", "Terasap"], answer: 2, explanation: "Perasaan (pe-...-an)." },
+                    { q: "Kata dasar 'sambut' dengan apitan 'pen-...-an' menjadi...", options: ["menyambut", "penyambutan", "disambut", "menyambutkan"], answer: 1, explanation: "Penyambutan." }
+                ]
+            },
+            {
+                stationName: "Stesen Akhir: Rangkuman Imbuhan",
+                badge: "Stesen 4 (Akhir)",
+                questions: [
+                    { q: "Apakah jenis imbuhan bagi perkataan 'berlari'?", options: ["Awalan", "Akhiran", "Apitan", "Sisipan"], answer: 0, explanation: "Berlari menggunakan awalan ber-." },
+                    { q: "Pilih padanan perkataan berimbuhan apitan yang betul:", options: ["Kecantikan", "Berjalan", "Makanan", "Menulis"], answer: 0, explanation: "Kecantikan (ke-...-an)." },
+                    { q: "Kata dasar 'baca' jika diberi apitan 'mem-...-kan' menjadi...", options: ["Membaca", "Membacakan", "Bacaan", "Dibaca"], answer: 1, explanation: "Membacakan." },
+                    { q: "Imbuhan akhiran '-an' pada kata dasar 'tahu' membentuk perkataan...", options: ["Tahuan", "Ketahuan", "Pengetahuan", "Tahu"], answer: 1, explanation: "Ketahuan." },
+                    { q: "Manakah antara berikut adalah kata berimbuhan awalan?", options: ["Terkenal", "Makanan", "Perpaduan", "Pakaian"], answer: 0, explanation: "Terkenal menggunakan awalan ter-." }
+                ]
+            }
+        ];
+
+        let currentStationIndex = 0;
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let studentName = "";
+        let studentClass = "";
+
+        const ticketForm = document.getElementById('ticket-form');
+        const loginSection = document.getElementById('login-section');
+        const gameSection = document.getElementById('game-section');
+        const certificateSection = document.getElementById('certificate-section');
+
+        ticketForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            studentName = document.getElementById('student-name').value;
+            studentClass = document.getElementById('student-class').value;
+
+            document.getElementById('player-ticket-info').innerText = `Pemandu: ${studentName} (${studentClass})`;
+            
+            loginSection.classList.add('hidden');
+            gameSection.classList.remove('hidden');
+            loadQuestion();
+        });
+
+        function loadQuestion() {
+            const currentStation = stationsData[currentStationIndex];
+            const currentQ = currentStation.questions[currentQuestionIndex];
+
+            document.getElementById('station-badge').innerText = currentStation.badge;
+            document.getElementById('station-title').innerText = currentStation.stationName;
+            document.getElementById('current-q-num').innerText = currentQuestionIndex + 1;
+            document.getElementById('current-score').innerText = score;
+            document.getElementById('question-text').innerText = currentQ.q;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            currentQ.options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 font-medium text-gray-700 transition duration-150";
+                btn.innerText = `${String.fromCharCode(65 + index)}. ${option}`;
+                btn.onclick = () => selectAnswer(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById('next-btn').classList.add('hidden');
+        }
+
+        function selectAnswer(selectedIndex, selectedBtn) {
+            const currentStation = stationsData[currentStationIndex];
+            const currentQ = currentStation.questions[currentQuestionIndex];
+            const optionsContainer = document.getElementById('options-container');
+            const allButtons = optionsContainer.getElementsByTagName('button');
+
+            // Nyahaktifkan semua butang selepas dipilih
+            for (let btn of allButtons) {
+                btn.disabled = true;
+            }
+
+            if (selectedIndex === currentQ.answer) {
+                selectedBtn.classList.remove('border-gray-200', 'hover:bg-blue-50');
+                selectedBtn.classList.add('bg-green-100', 'border-green-500', 'text-green-800');
+                score++;
+            } else {
+                selectedBtn.classList.remove('border-gray-200', 'hover:bg-blue-50');
+                selectedBtn.classList.add('bg-red-100', 'border-red-500', 'text-red-800');
+                // Tunjuk jawapan betul
+                allButtons[currentQ.answer].classList.add('bg-green-100', 'border-green-500', 'text-green-800');
+            }
+
+            document.getElementById('current-score').innerText = score;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            const currentStation = stationsData[currentStationIndex];
+
+            if (currentQuestionIndex < currentStation.questions.length) {
+                loadQuestion();
+            } else {
+                // Selesai satu stesen, pindah ke stesen seterusnya
+                currentStationIndex++;
+                currentQuestionIndex = 0;
+
+                if (currentStationIndex < stationsData.length) {
+                    alert(`Tahniah! Anda telah melengkapkan stesen ini. Bersedia ke stesen seterusnya! 🚂`);
+                    loadQuestion();
+                } else {
+                    // Tamat semua stesen! Paparkan sijil
+                    gameSection.classList.add('hidden');
+                    certificateSection.classList.remove('hidden');
+
+                    document.getElementById('cert-name').innerText = studentName;
+                    document.getElementById('cert-class').innerText = studentClass;
+                    document.getElementById('cert-score').innerText = `${score} / 20`;
+                    
+                    const today = new Date().toLocaleDateString('ms-MY');
+                    document.getElementById('cert-date').innerText = today;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
